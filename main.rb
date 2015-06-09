@@ -11,7 +11,7 @@ def main()
 	baseUrl='https://site2.sbisec.co.jp'
 	agent=Mechanize.new
 	savePath="data/"
-	
+	sendStr=String.new	
 	begin
 		FileUtils.mkdir_p(savePath) unless FileTest.exist?(savePath)
 		sbiLogin(baseUrl,agent)
@@ -19,11 +19,26 @@ def main()
 		stockList=CSV.read('../holdStockList.csv')
 		stockList.delete_at(0)
 		#保有銘柄ごとのニュースを取得
-		stockNews=Array.new
+		stockNews=Hash.new
 		stockList.each_with_index do |code,i|
-			stockNews[i]=getStockNews(agent,baseUrl,code[0])
+			stockNews[code.to_s]=getStockNews(agent,baseUrl,code[0])
 		end
-		pp stockNews
+		#pp stockNews
+
+		#きょうのニュースを検索し、メールで送信
+		nowDate=Time.now.strftime("%m/%d")
+		stockNews.each do |key,value|
+			sendStr+=key+'のニュース'+"\n"
+			value.each_with_index do |news,i|
+				date=news['date'][0,5]
+				pp date
+				if  date==nowDate
+					sendStr+=i.to_s+':'+news['title']+"\n"
+				end
+			end
+			sendStr+="\n"
+		end		
+		puts sendStr
 	end
 end
 
