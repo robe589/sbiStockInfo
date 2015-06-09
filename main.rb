@@ -41,8 +41,10 @@ def main()
 					isNews=true
 				end
 			end
-			isStockNews=false
-			sendStr+="\n"
+			if isStockNews==true
+				isStockNews=false
+				sendStr+="\n"
+			end
 		end		
 		gmailSend=GmailSend.new($senderAddress,$gmailPassword)
 		if isNews
