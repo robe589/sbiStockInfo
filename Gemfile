@@ -5,3 +5,4 @@ source "https://rubygems.org"
 gem 'nokogiri'
 gem 'mechanize'
 gem 'twitter'
+gem 'mail'

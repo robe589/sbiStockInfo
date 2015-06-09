@@ -4,8 +4,10 @@ Bundler.require
 require 'pp'
 require 'csv'
 
+
 require './myid'
 require './twitterApi'
+require './GmailSend'
 
 def main()	
 	baseUrl='https://site2.sbisec.co.jp'
@@ -39,6 +41,8 @@ def main()
 			sendStr+="\n"
 		end		
 		puts sendStr
+		gmailSend=GmailSend.new($senderAddress,$gmailPassword)
+		gmailSend.sendMail('stockInfo589@gmail.com','本日の保有銘柄ニュース',sendStr)
 	end
 end
 
