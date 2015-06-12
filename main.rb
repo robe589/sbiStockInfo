@@ -15,7 +15,15 @@ def main()
 	begin
 		FileUtils.mkdir_p(savePath) unless FileTest.exist?(savePath)
 		sbiLogin(baseUrl,agent)
-		getStockNews(agent,baseUrl,3528)
+		#保有リストを取得
+		stockList=CSV.read('../holdStockList.csv')
+		stockList.delete_at(0)
+		#保有銘柄ごとのニュースを取得
+		stockNews=Array.new
+		stockList.each_with_index do |code,i|
+			stockNews[i]=getStockNews(agent,baseUrl,code[0])
+		end
+		pp stockNews
 	end
 end
 
@@ -57,7 +65,6 @@ def csvSave(body,savePath)
 end
 
 def getStockNews(agent,baseUrl,code)
-	code=code.to_s
 	url=baseUrl+'/ETGate/?_ControlID=WPLETsiR001Control&_PageID=WPLETsiR001Idtl20&_DataStoreID=DSWPLETsiR001Control&_ActionID=DefaultAID&s_rkbn=&s_btype=&i_stock_sec='+code+'&i_dom_flg=1&i_exchange_code=TKY&i_output_type=1&exchange_code=TKY&stock_sec_code_mul='+code+'&ref_from=1&ref_to=20&wstm4130_sort_id=&wstm4130_sort_kbn=&qr_keyword=&qr_suggest=&qr_sort='
 	page=agent.get(url)
 	body=Nokogiri::HTML(page.body)
@@ -73,7 +80,7 @@ def getStockNews(agent,baseUrl,code)
 		end
 	end
 
-	pp news
+	return news
 end
 
 def removeToken(text)
