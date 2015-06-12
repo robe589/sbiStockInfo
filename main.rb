@@ -11,7 +11,6 @@ def main()
 	baseUrl='https://site2.sbisec.co.jp'
 	agent=Mechanize.new
 	savePath="data/"
-	#twitterApi=TwitterApi.new($consumer_key,$consumer_secret,$access_token,$access_token_secret)
 	
 	begin
 		FileUtils.mkdir_p(savePath) unless FileTest.exist?(savePath)
