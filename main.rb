@@ -25,22 +25,18 @@ def main()
 		stockList.each_with_index do |code,i|
 			stockNews[code.to_s]=getStockNews(agent,baseUrl,code[0])
 		end
-		#pp stockNews
-
 		#きょうのニュースを検索し、メールで送信
 		nowDate=Time.now.strftime("%m/%d")
 		stockNews.each do |key,value|
 			sendStr+=key+'のニュース'+"\n"
 			value.each_with_index do |news,i|
 				date=news['date'][0,5]
-				pp date
 				if  date==nowDate
 					sendStr+=i.to_s+':'+news['title']+"\n"
 				end
 			end
 			sendStr+="\n"
 		end		
-		puts sendStr
 		gmailSend=GmailSend.new($senderAddress,$gmailPassword)
 		gmailSend.sendMail('stockInfo589@gmail.com','本日の保有銘柄ニュース',sendStr)
 	end

@@ -62,6 +62,3 @@ DEPENDENCIES
   mechanize
   nokogiri
   twitter
-
-BUNDLED WITH
-   1.10.3
