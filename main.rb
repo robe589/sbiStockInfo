@@ -27,16 +27,21 @@ def main()
 		end
 		#きょうのニュースを検索し、メールで送信
 		nowDate=Time.now.strftime("%m/%d")
-		isNews=false#ニュースが1つでもあったらtrue
+		isNews=false#全部の銘柄でニュースが1つでもあったらtrue
+		isStockNews=false
 		stockNews.each do |key,value|
-			sendStr+=key+'のニュース'+"\n"
 			value.each_with_index do |news,i|
 				date=news['date'][0,5]
 				if  date==nowDate
+					if isStockNews==false
+						isStockNews=true
+						sendStr+=key+'のニュース'+"\n"
+					end
 					sendStr+=i.to_s+':'+news['title']+"\n"
 					isNews=true
 				end
 			end
+			isStockNews=false
 			sendStr+="\n"
 		end		
 		gmailSend=GmailSend.new($senderAddress,$gmailPassword)
