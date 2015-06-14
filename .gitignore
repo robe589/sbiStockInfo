@@ -1,0 +1,5 @@
+vendor/
+.bundle/config
+kyodoku.rb
+myid.rb
+data/
