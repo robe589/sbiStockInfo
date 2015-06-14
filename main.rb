@@ -65,22 +65,23 @@ def getStockNews(agent,baseUrl,code)
 	news=Array.new
 	body.xpath('//td[@class="sbody"]').each_with_index do |node,i|
 		news[i]=Hash.new
-		news[i]['date']=removeToken(node.text)
+		text=removeToken(node.text)
+		#?を削除
+		newText=text[1,5]+' '+text[8,5]	
+		news[i]['date']=newText
 		node.xpath('./..//a').each do |node1|
-			news[i]['title']=node1.text
+			news[i]['title']=removeToken(node1.text)
 		end
 	end
 
-	#pp news
+	pp news
 end
 
 def removeToken(text)
 	while(text.index("\r")!=nil)do text.slice!("\r") end
 	while(text.index("\n")!=nil)do text.slice!("\n") end
 	while(text.index("\t")!=nil)do text.slice!("\t") end
-	#?を削除
-	newText=text[1,5]+' '+text[8,5]	
-	pp newText
+
 	return text
 end
 
