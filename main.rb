@@ -51,6 +51,7 @@ def main()
 			gmailSend.sendMail('stockInfo589@gmail.com','本日の保有銘柄ニュース',sendStr)
 		end
 	end
+	puts '正常終了'
 end
 
 def sbiLogin(baseUrl,agent)
