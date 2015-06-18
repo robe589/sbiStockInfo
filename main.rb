@@ -47,7 +47,7 @@ def main()
 			end
 		end		
 		gmailSend=GmailSend.new($senderAddress,$gmailPassword)
-		if isNews
+		if isNews==true
 			gmailSend.sendMail('stockInfo589@gmail.com','本日の保有銘柄ニュース',sendStr)
 		end
 	end
