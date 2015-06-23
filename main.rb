@@ -23,8 +23,7 @@ def main()
 		#保有銘柄ごとのニュースを取得
 		stockNews=Hash.new
 		stockList.each_with_index do |code,i|
-			pp code
-			pp stockNews[code[0]]=getStockNews(agent,baseUrl,code[0])
+			stockNews[code[0]]=getStockNews(agent,baseUrl,code[0])
 		end
 		#きょうのニュースを検索し、メールで送信
 		nowDate=Time.now.strftime("%m/%d")
@@ -33,13 +32,12 @@ def main()
 		stockNews.each do |key,value|
 			value.each_with_index do |news,i|
 				date=news['date'][0,5]
-				puts date+','+nowDate
 				if  date==nowDate
 					if isStockNews==false
 						isStockNews=true
 						sendStr+=key+'のニュース'+"\n"
 					end
-					sendStr+=i.to_s+':'+news['title']+"\n"
+					sendStr+=i.to_s+':'+news['title']+"\n\n"
 					isNews=true
 				end
 			end
@@ -101,7 +99,7 @@ def getStockNews(agent,baseUrl,code)
 	body=Nokogiri::HTML(page.body)
 	news=Array.new
 	
-	body.xpath('//td[@class="sbody"]').each_with_index do |node,i|
+	body.xpath('//td[@class="sbody" or @class="sbody_today"]').each_with_index do |node,i|
 		news[i]=Hash.new
 		text=removeToken(node.text)
 		#?を削除
