@@ -13,6 +13,8 @@ GEM
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     http_parser.rb (0.6.0)
+    jpstock (0.6.7)
+      nokogiri
     json (1.8.3)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
@@ -58,6 +60,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  jpstock
   mail
   mechanize
   nokogiri
