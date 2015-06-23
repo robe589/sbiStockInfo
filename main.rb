@@ -22,9 +22,14 @@ def main()
 		stockList.delete_at(0)
 		#保有銘柄ごとのニュースを取得
 		stockNews=Hash.new
+		companyName=Hash.new
 		stockList.each_with_index do |code,i|
 			stockNews[code[0]]=getStockNews(agent,baseUrl,code[0])
+			#会社名を取得
+			stockInfo=JpStock.quote(:code=>code)
+			companyName[code[0]]=stockInfo[0].company_name
 		end
+		pp companyName
 		#きょうのニュースを検索し、メールで送信
 		nowDate=Time.now.strftime("%m/%d")
 		isNews=false#全部の銘柄でニュースが1つでもあったらtrue
@@ -35,7 +40,7 @@ def main()
 				if  date==nowDate
 					if isStockNews==false
 						isStockNews=true
-						sendStr+=key+'のニュース'+"\n"
+						sendStr+=key+'['+companyName[key]+']のニュース'+"\n"
 					end
 					sendStr+=i.to_s+':'+news['title']+"\n\n"
 					isNews=true
