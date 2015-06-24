@@ -42,7 +42,7 @@ def main()
 						isStockNews=true
 						sendStr+=key+'['+companyName[key]+']のニュース'+"\n"
 					end
-					sendStr+=i.to_s+':'+news['title']+"\n\n"
+					sendStr+=i.to_s+':'+news['title']+'\n'+news['content']+"\n\n"
 					isNews=true
 				end
 			end
@@ -111,7 +111,10 @@ def getStockNews(agent,baseUrl,code)
 		newText=text[1,5]+' '+text[8,5]	
 		news[i]['date']=newText
 		node.xpath('./..//a').each do |node1|
-			news[i]['title']=removeToken(node1.text)
+		    contentUrl=baseUrl+node1.values[0]
+			content=getContent(agent,contentUrl)
+			news[i]['title']=removeToken(content['title'])
+			news[i]['content']=content['content']
 		end
 	end
 
@@ -124,6 +127,21 @@ def removeToken(text)
 	while(text.index("\t")!=nil)do text.slice!("\t") end
 
 	return text
+end
+
+def getContent(agent,getUrl)
+	page=agent.get(getUrl)
+	body=Nokogiri::HTML(page.body)
+
+	text=Array.new
+	body.xpath('//td[@class="mbody"]').each_with_index do |node,i|
+		text[i]=node.text
+	end
+	content=Hash.new
+	content['title']=text[0]
+	content['content']=text[1]
+
+	return content
 end
 
 main()
