@@ -23,7 +23,8 @@ def main()
 		#保有銘柄ごとのニュースを取得
 		stockNews=Hash.new
 		stockList.each_with_index do |code,i|
-			stockNews[code.to_s]=getStockNews(agent,baseUrl,code[0])
+			pp code
+			pp stockNews[code[0]]=getStockNews(agent,baseUrl,code[0])
 		end
 		#きょうのニュースを検索し、メールで送信
 		nowDate=Time.now.strftime("%m/%d")
@@ -32,6 +33,7 @@ def main()
 		stockNews.each do |key,value|
 			value.each_with_index do |news,i|
 				date=news['date'][0,5]
+				puts date+','+nowDate
 				if  date==nowDate
 					if isStockNews==false
 						isStockNews=true
@@ -47,8 +49,10 @@ def main()
 			end
 		end		
 		gmailSend=GmailSend.new($senderAddress,$gmailPassword)
+		pp sendStr
 		if isNews==true
 			gmailSend.sendMail('stockInfo589@gmail.com','本日の保有銘柄ニュース',sendStr)
+			puts 'メール送信完了'
 		end
 	end
 	puts '正常終了'
@@ -96,6 +100,7 @@ def getStockNews(agent,baseUrl,code)
 	page=agent.get(url)
 	body=Nokogiri::HTML(page.body)
 	news=Array.new
+	
 	body.xpath('//td[@class="sbody"]').each_with_index do |node,i|
 		news[i]=Hash.new
 		text=removeToken(node.text)
