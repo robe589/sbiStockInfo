@@ -24,10 +24,13 @@ def main()
 		stockNews=Hash.new
 		companyName=Hash.new
 		stockList.each_with_index do |code,i|
+			pp code[0]
 			stockNews[code[0]]=getStockNews(agent,baseUrl,code[0])
 			#会社名を取得
-			stockInfo=JpStock.quote(:code=>code)
-			companyName[code[0]]=stockInfo[0].company_name
+			stockInfo=JpStock.quote(:code=>code[0])
+			pp stockInfo
+			next if stockInfo ==nil
+			companyName[code[0]]=stockInfo.company_name
 		end
 		pp companyName
 		#きょうのニュースを検索し、メールで送信
@@ -42,7 +45,7 @@ def main()
 						isStockNews=true
 						sendStr+=key+'['+companyName[key]+']のニュース'+"\n"
 					end
-					sendStr+=i.to_s+':'+news['title']+'\n'+news['content']+"\n\n"
+					sendStr+=news['date']+':'+news['title']+"\n"+news['content']+"\n\n"
 					isNews=true
 				end
 			end
@@ -75,6 +78,7 @@ end
 def csvSave(body,savePath)
 	#現在時刻を取得
 	date=Time.now.strftime("%Y%m%d")
+	date="20150706"
 	first=0
 	csvSavePath=savePath+date+".csv"
 	CSV.open(csvSavePath,"w") do end
@@ -104,7 +108,7 @@ def getStockNews(agent,baseUrl,code)
 	body=Nokogiri::HTML(page.body)
 	news=Array.new
 	
-	body.xpath('//td[@class="sbody" or @class="sbody_today"]').each_with_index do |node,i|
+	body.xpath('//td[@class="sbody_today"]').each_with_index do |node,i|
 		news[i]=Hash.new
 		text=removeToken(node.text)
 		#?を削除
@@ -115,6 +119,7 @@ def getStockNews(agent,baseUrl,code)
 			content=getContent(agent,contentUrl)
 			news[i]['title']=removeToken(content['title'])
 			news[i]['content']=content['content']
+			puts news[i][:content]
 		end
 	end
 
