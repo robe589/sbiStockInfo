@@ -59,6 +59,9 @@ def main()
 		if isNews==true
 			gmailSend.sendMail('stockInfo589@gmail.com','本日の保有銘柄ニュース',sendStr)
 			puts 'メール送信完了'
+		else
+			sendStr='ニュースが１つもありませんでした'
+			gmailSend.sendMail('stockInfo589@gmail.com','本日の保有銘柄ニュース',sendStr)
 		end
 	end
 	puts '正常終了'
